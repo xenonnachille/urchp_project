@@ -1,0 +1,6 @@
+fastapi>=0.68.0
+uvicorn>=0.15.0
+numpy>=1.21.0
+plotly>=5.3.1
+pydantic>=1.8.0
+pytest>=6.2.4
