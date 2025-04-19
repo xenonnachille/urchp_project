@@ -1,12 +1,14 @@
 {
-    "alpha": 0.01,
-    "length": 1.0,
-    "nx": 3,
-    "nt": 10,
-    "dt": 0.1,
-    "initial_condition": [0, 1, 0],
-    "boundary_conditions": {
-      "left": 0.0,
-      "right": 0.0
-    }
-  }
+  "alpha": 0.5,
+  "length": 2.0,
+  "nx": 80,
+  "nt": 200,
+  "dt": 0.005,
+  "initial_condition": "exp(-((x-1)**2)/0.1)",
+  "boundary_conditions": {
+      "left": {"type": "robin", "value": "0.5*u + 1"},
+      "right": {"type": "dirichlet", "value": "sin(t)"}
+  },
+  "source_term": "x*cos(2*pi*t)",
+  "scheme": "implicit"
+}
