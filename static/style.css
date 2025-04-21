@@ -1,0 +1,65 @@
+#plot {
+    width: 920px;
+    height: 600px;
+    border: 1px solid #ccc;
+    margin-top: 20px;
+}
+  
+body {
+font-family: sans-serif;
+padding: 20px;
+}
+
+.control-group {
+margin-bottom: 10px;
+}
+
+label {
+margin-right: 10px;
+display: inline-block;
+width: 120px;
+}
+
+.slider-label {
+display: inline-block;
+width: 60px;
+text-align: right;
+font-family: monospace;
+}
+
+input[type=range] {
+width: 200px;
+}
+
+.modebar-btn {
+pointer-events: auto !important;
+}
+
+.plotly-graph-div .updatemenu {
+pointer-events: auto;
+}
+
+.plotly-graph-div .updatemenu .button {
+cursor: pointer;
+pointer-events: auto;
+}
+
+.plotly-graph-div .updatemenu .button rect {
+fill: #ddd;
+stroke: #999;
+rx: 4;
+ry: 4;
+}
+
+.plotly-graph-div .updatemenu .button text {
+font-size: 14px;
+fill: #333;
+}
+
+.plotly-graph-div .updatemenu .button:hover rect {
+fill: #bbb;
+}
+
+.plotly-graph-div .updatemenu .button:active rect {
+fill: #999;
+}

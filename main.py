@@ -7,6 +7,8 @@ from schemas import HeatEquationInput
 from solvers.heat_equation import solve_heat_equation
 import plotly.graph_objects as go
 from typing import Union
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI(
     title="Universal PDE Solver API",
@@ -14,11 +16,19 @@ app = FastAPI(
     version="1.0.0"
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # можешь указать конкретные origin'ы, если хочешь
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def index():
-    with open("static/index.html") as f:
+    with open("index.html") as f:
         return f.read()
 
 @app.post("/solve/heat-equation/")
@@ -47,6 +57,10 @@ async def solve_heat_eq(params: HeatEquationInput):
             source_term=params.source_term,
             scheme=params.scheme
         )
+        return {
+            "solution": solution.tolist(),
+            "parameters": params.dict()
+         }
 
         # визуализация
         fig = go.Figure(data=[go.Surface(z=solution.T)])
@@ -61,7 +75,7 @@ async def solve_heat_eq(params: HeatEquationInput):
                 zaxis_title='Temperature'
             )
         )
-        plot_html = fig.to_html(full_html=False, include_plotlyjs='cdn')
+        plot_html = fig.to_html(full_html=False, include_plotlyjs=False)
 
         return {
             "solution": solution.tolist(),

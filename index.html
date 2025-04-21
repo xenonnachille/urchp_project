@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Heat Equation Solver</title>
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+  <h1>Решение уравнения теплопроводности</h1>
+
+  <div class="control-group">
+    <label for="alpha">alpha:</label>
+    <input type="range" id="alpha" min="0.01" max="2" step="0.01" value="0.5">
+    <span id="val-alpha" class="slider-label">0.50</span>
+  </div>
+
+  <div class="control-group">
+    <label for="length">length:</label>
+    <input type="range" id="length" min="0.1" max="10" step="0.1" value="2">
+    <span id="val-length" class="slider-label">2.0</span>
+  </div>
+
+  <div class="control-group">
+    <label for="nx">nx:</label>
+    <input type="range" id="nx" min="10" max="500" step="1" value="80">
+    <span id="val-nx" class="slider-label">80</span>
+  </div>
+
+  <div class="control-group">
+    <label for="nt">nt:</label>
+    <input type="range" id="nt" min="10" max="1000" step="1" value="200">
+    <span id="val-nt" class="slider-label">200</span>
+  </div>
+
+  <div class="control-group">
+    <label for="dt">dt:</label>
+    <input type="range" id="dt" min="0.001" max="0.1" step="0.001" value="0.005">
+    <span id="val-dt" class="slider-label">0.005</span>
+  </div>
+
+  <div class="control-group">
+    <label for="scheme">Схема:</label>
+    <select id="scheme">
+      <option value="explicit">explicit</option>
+      <option value="implicit">implicit</option>
+      <option value="crank-nicolson">crank-nicolson</option>
+    </select>
+  </div>
+
+  <div class="control-group">
+    <label for="initial_condition">Начальное условие:</label>
+    <select id="initial_condition">
+      <option value="sin(pi * x)">sin(pi * x)</option>
+      <option value="exp(-((x-1)**2)/0.1)">exp(-((x-1)**2)/0.1)</option>
+      <option value="x * (1 - x)">x * (1 - x)</option>
+      <option value="heaviside(x - 0.5)">heaviside(x - 0.5)</option>
+      <option value="0.5 + 0.5 * sin(2*pi*x)">0.5 + 0.5 * sin(2*pi*x)</option>
+      <option value="abs(x - 0.5)">abs(x - 0.5)</option>
+    </select>
+  </div>
+
+  <div class="control-group">
+    <label for="source_term">Источник:</label>
+    <select id="source_term">
+      <option value="0">0</option>
+      <option value="x * cos(2*pi*t)">x * cos(2*pi*t)</option>
+      <option value="sin(pi*x)*exp(-t)">sin(pi*x)*exp(-t)</option>
+      <option value="x**2 - t">x**2 - t</option>
+      <option value="10 * exp(-((x-1)**2)/0.05)">10 * exp(-((x-1)**2)/0.05)</option>
+      <option value="heaviside(x - 1)">heaviside(x - 1)</option>
+      <option value="sin(5*pi*x)*cos(2*pi*t)">sin(5*pi*x)*cos(2*pi*t)</option>
+    </select>
+  </div>
+
+  <div class="control-group">
+    <label>Граница слева:</label>
+    <select id="left_bc_type">
+      <option value="dirichlet">dirichlet</option>
+      <option value="neumann">neumann</option>
+      <option value="robin">robin</option>
+    </select>
+    <select id="left_bc_value">
+      <option value="0">0</option>
+      <option value="1">1</option>
+      <option value="sin(t)">sin(t)</option>
+      <option value="cos(pi*t)">cos(pi*t)</option>
+      <option value="0.5*u + 1">0.5*u + 1</option>
+      <option value="x + t">x + t</option>
+      <option value="exp(-t)">exp(-t)</option>
+    </select>
+  </div>
+
+  <div class="control-group">
+    <label>Граница справа:</label>
+    <select id="right_bc_type">
+      <option value="dirichlet">dirichlet</option>
+      <option value="neumann">neumann</option>
+      <option value="robin">robin</option>
+    </select>
+    <select id="right_bc_value">
+      <option value="0">0</option>
+      <option value="1">1</option>
+      <option value="sin(t)">sin(t)</option>
+      <option value="cos(pi*t)">cos(pi*t)</option>
+      <option value="0.5*u + 1">0.5*u + 1</option>
+      <option value="x + t">x + t</option>
+      <option value="exp(-t)">exp(-t)</option>
+    </select>
+  </div>
+
+  <button onclick="solve()">Решить</button>
+
+  <div class="control-group">
+    <label for="mode">Режим отображения:</label>
+    <select id="mode">
+      <option value="3d">3D график</option>
+      <option value="animation">Анимация T(x, t)</option>
+    </select>
+  </div>
+
+  <div id="plot"></div>
+
+  <script src="static/main.js"></script>
+</body>
+</html>
