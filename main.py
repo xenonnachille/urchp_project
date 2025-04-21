@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 import numpy as np
 import numexpr as ne
 from schemas import HeatEquationInput
@@ -12,6 +13,13 @@ app = FastAPI(
     description="API for solving 1D heat equation with arbitrary initial/boundary conditions",
     version="1.0.0"
 )
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/", response_class=HTMLResponse)
+async def index():
+    with open("static/index.html") as f:
+        return f.read()
 
 @app.post("/solve/heat-equation/")
 async def solve_heat_eq(params: HeatEquationInput):
@@ -44,13 +52,16 @@ async def solve_heat_eq(params: HeatEquationInput):
         fig = go.Figure(data=[go.Surface(z=solution.T)])
         fig.update_layout(
             title="Heat Equation Solution",
+            width=900,     # ширина в пикселях
+            height=600,    # высота в пикселях
+            margin=dict(l=0, r=0, b=0, t=30),  # чуть-чуть поджимаем поля
             scene=dict(
                 xaxis_title='Time',
                 yaxis_title='Position',
                 zaxis_title='Temperature'
             )
         )
-        plot_html = fig.to_html(full_html=False)
+        plot_html = fig.to_html(full_html=False, include_plotlyjs='cdn')
 
         return {
             "solution": solution.tolist(),

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Heat Equation Solver</title>
+  <style>
+    #plot {
+      width: 920px;
+      height: 650px; /* задай нужную высоту */
+      border: 1px solid #ccc;
+      margin-top: 20px;
+    }
+  
+    /* Чтобы тело страницы не прилипало */
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+  
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Решение уравнения теплопроводности</h1>
+  <button onclick="solve()">Решить</button>
+  <div id="plot" style="margin-top: 20px;"></div>
+
+  <script>
+    async function solve() {
+      try {
+        const response = await fetch("/solve/heat-equation/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            "alpha": 0.5,
+            "length": 2.0,
+            "nx": 80,
+            "nt": 200,
+            "dt": 0.005,
+            "initial_condition": "exp(-((x-1)**2)/0.1)",
+            "boundary_conditions": {
+                "left": {"type": "robin", "value": "0.5*u + 1"},
+                "right": {"type": "dirichlet", "value": "sin(t)"}
+            },
+            "source_term": "x*cos(2*pi*t)",
+            "scheme": "implicit"
+            })
+        });
+
+        if (!response.ok) throw new Error(await response.text());
+
+        const data = await response.json();
+
+        // вставка HTML-графика в div
+        const iframe = document.createElement("iframe");
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.border = "none";
+        iframe.srcdoc = data.visualization;
+
+        const plotDiv = document.getElementById("plot");
+        plotDiv.innerHTML = "";  // очищаем
+        plotDiv.appendChild(iframe);
+
+        // если хочешь — можно отладочно вывести параметры
+        console.log("Параметры:", data.parameters);
+      } catch (error) {
+        console.error("Ошибка при решении:", error);
+        document.getElementById("plot").innerHTML = `<p style="color:red;">Ошибка: ${error.message}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
