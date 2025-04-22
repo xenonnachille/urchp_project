@@ -1,12 +1,10 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 import numpy as np
 import numexpr as ne
 from schemas import HeatEquationInput
 from solvers.heat_equation import solve_heat_equation
-import plotly.graph_objects as go
-from typing import Union
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -61,27 +59,6 @@ async def solve_heat_eq(params: HeatEquationInput):
             "solution": solution.tolist(),
             "parameters": params.dict()
          }
-
-        # визуализация
-        fig = go.Figure(data=[go.Surface(z=solution.T)])
-        fig.update_layout(
-            title="Heat Equation Solution",
-            width=900,     # ширина в пикселях
-            height=600,    # высота в пикселях
-            margin=dict(l=0, r=0, b=0, t=30),  # чуть-чуть поджимаем поля
-            scene=dict(
-                xaxis_title='Time',
-                yaxis_title='Position',
-                zaxis_title='Temperature'
-            )
-        )
-        plot_html = fig.to_html(full_html=False, include_plotlyjs=False)
-
-        return {
-            "solution": solution.tolist(),
-            "visualization": plot_html,
-            "parameters": params.dict()
-        }
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
